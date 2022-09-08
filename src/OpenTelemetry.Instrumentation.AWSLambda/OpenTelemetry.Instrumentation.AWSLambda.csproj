@@ -6,6 +6,7 @@
     <PackageTags>$(PackageTags);AWS Lambda</PackageTags>
     <MinVerTagPrefix>Instrumentation.AWSLambda-</MinVerTagPrefix>
     <EnablePublicApi>true</EnablePublicApi>
+    <EnableAnalysis>true</EnableAnalysis>
   </PropertyGroup>
 
   <ItemGroup>

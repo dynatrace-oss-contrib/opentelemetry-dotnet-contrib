@@ -143,7 +143,7 @@ namespace OpenTelemetry.Instrumentation.AWSLambda
             ILambdaContext context,
             ActivityContext parentContext = default)
         {
-            Func<Task> action = async () => await lambdaHandler(input, context);
+            Func<Task> action = () => lambdaHandler(input, context);
             return TraceInternalAsync(tracerProvider, action, input, context, parentContext);
         }
 
@@ -171,8 +171,8 @@ namespace OpenTelemetry.Instrumentation.AWSLambda
             ActivityContext parentContext = default)
         {
             TResult result = default;
-            Func<Task> action = async () => result = await lambdaHandler(input, context);
-            await TraceInternalAsync(tracerProvider, action, input, context, parentContext);
+            Func<Task> action = async () => result = await lambdaHandler(input, context).ConfigureAwait(false);
+            await TraceInternalAsync(tracerProvider, action, input, context, parentContext).ConfigureAwait(false);
             return result;
         }
 
@@ -195,7 +195,7 @@ namespace OpenTelemetry.Instrumentation.AWSLambda
             ILambdaContext context,
             ActivityContext parentContext = default)
         {
-            Func<Task> action = async () => await lambdaHandler(context);
+            Func<Task> action = () => lambdaHandler(context);
             return TraceInternalAsync<object>(tracerProvider, action, null, context, parentContext);
         }
 
@@ -276,7 +276,7 @@ namespace OpenTelemetry.Instrumentation.AWSLambda
             var lambdaActivity = OnFunctionStart(input, context, parentContext);
             try
             {
-                await handlerAsync();
+                await handlerAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
